@@ -1,21 +1,25 @@
 import React, { useState, useRef } from "react"
 import Header from "./Header"
 import checkValidData from "../utils/validate"
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth"
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth"
 import {auth} from "../utils/firebase"
+import { useNavigate} from "react-router-dom"
+
 const Login = () => {
     const [isSignIn, setIsSignIn] = useState(true)
     const [errorMsg, setErrorMsg] = useState(null)
     const email = useRef(null)
     const password = useRef(null)
     // const fullName = useRef(null)
+        const navigate = useNavigate()
+    
     const toggleSignUp = () => {
         isSignIn ? setIsSignIn(false) : setIsSignIn(true)
 
         // setIsSignIn(!isSignIn)
     }
     const handleBtnClick = () => {
-        const msg = checkValidData(email.current.value,password.current.value    )
+        const msg = checkValidData(email.current.value,password.current.value)
         // console.log(email.current.value)
         // console.log(password.current.value)
         // console.log(fullName.current.value)
@@ -33,8 +37,17 @@ const Login = () => {
             .then((userCredential) => {
                 // Signed up 
                 const user = userCredential.user;
+                updateProfile(user, {
+                    // displayName: fullName.current.value
+                  }).then(() => {
+                    // Profile updated!
+                    navigate("/browse")
+                  }).catch((error) => {
+                    // An error occurred
+                    setErrorMsg(error.msg)
+                  });                  
                 console.log(user);
-                
+                navigate("/browse")
                 // ...
             })
             .catch((error) => {
@@ -51,12 +64,14 @@ const Login = () => {
             signInWithEmailAndPassword(
                 auth, 
                 email.current.value, 
-                password.current.value
+                password.current.value,
+                // fullName.current.value
             )
             .then((userCredential) => {
                 // Signed in 
                 const user = userCredential.user;
                 console.log(user);
+                navigate("/browse")
 
                 // ...
             })
@@ -68,6 +83,7 @@ const Login = () => {
         }
 
     }
+    
     return(
         <>
         <Header/>
