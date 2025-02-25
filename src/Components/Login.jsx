@@ -41,13 +41,11 @@ const Login = () => {
                     // displayName: fullName.current.value
                   }).then(() => {
                     // Profile updated!
-                    navigate("/browse")
                   }).catch((error) => {
                     // An error occurred
                     setErrorMsg(error.msg)
                   });                  
-                console.log(user);
-                navigate("/browse")
+
                 // ...
             })
             .catch((error) => {
@@ -70,8 +68,6 @@ const Login = () => {
             .then((userCredential) => {
                 // Signed in 
                 const user = userCredential.user;
-                console.log(user);
-                navigate("/browse")
 
                 // ...
             })
